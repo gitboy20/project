@@ -1,0 +1,17 @@
+---
+- hosts: all
+  remote_user: ansible
+  become: yes
+
+  tasks:
+    - name: Ensure samba-client is installed.
+      yum: name=samba-client state=installed update_cache=yes
+
+    - name: Ensure cifs-utils is installed
+      yum: name=cifs-utils state=installed update_cache=yes
+
+    - name: Create mountable dir
+      file: path=/sambaclient state=directory mode=777 owner=root group=root
+
+    - name: mount /sambashares to /sambaclient
+      mount: fstype=cifs name=/sambashares src='//prdx-samba11/sambashares' state=mounted
